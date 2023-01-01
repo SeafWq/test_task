@@ -1,6 +1,7 @@
 const express =require('express');
 const apiRouter = express.Router();
 const  { insertUser, findAllUsers, insertTank, junctionCreate,findUsersTank,findAllTanks,findTankUsers} = require('../controller/controller');
+const { sequelize, Sequelize } = require('../models');
 const db = require('../models');
 const Tank = db.tank;
 const User = db.user;
@@ -32,29 +33,36 @@ const RelationsTankUser = db.RelationsTankUser;
 
       // Create a record in the junction table relationsTankUser
       apiRouter.post('/tank-user',  async ({body}, res, next)=>{
-        try{         
-            const tankId = body.TankId;
-            const userId = body.UserId;
-            const tank = await Tank.findByPk(tankId) 
-            const user = await User.findByPk(userId)
-            tank.total += user.put_milk;
-            tank.save()
-            console.log(userId);
-            console.log(tankId);
-             
-                  if (!userId || !tankId) {
-                    return res.sendStatus(400);
-                 }
-            const relationsTankUser = new RelationsTankUser(body)
-            relationsTankUser.NameTank = tank.name;
-            relationsTankUser.UserName = user.name;
-            relationsTankUser.PutMilk = user.put_milk;
-            const newRelations = relationsTankUser.save()
-            return res.status(200).send(newRelations).message("cool");
-            }catch(err){
-            return res.status(400)
-            } 
-     });
+          try{
+
+              const tank = await Tank.findOne({
+                  where: {
+                      total: await(Tank.min('total'))
+                  }
+              })
+              const user = await User.findOne({
+                  where: {
+                      name: body.UserName
+                  }
+              })
+              tank.total += user.put_milk;
+              await tank.save()
+              console.log(user);
+
+
+              if (!user) {
+                  return res.sendStatus(400);
+              }
+              const relationsTankUser = new RelationsTankUser(body)
+              relationsTankUser.NameTank = tank.name;
+              relationsTankUser.UserName = user.name;
+              relationsTankUser.PutMilk = user.put_milk;
+              const newRelations = relationsTankUser.save()
+              return res.status(200).send(newRelations).message("cool");
+          }catch(err){
+              return res.status(400)
+          }
+      });
 
      //get all users and tanks junction
      apiRouter.get('/tank-user', async (req, res, next)=>{

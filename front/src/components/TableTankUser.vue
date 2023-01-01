@@ -5,8 +5,6 @@
        <thead>
          <tr>
            <th scope="col">ID</th>
-           <th scope="col">Tank id</th>
-           <th scope="col">User id</th>
            <th scope="col">Tank name</th>
            <th scope="col">Username</th>
            <th scope="col">Milk</th>
@@ -17,8 +15,6 @@
        <tbody>
         <tr v-for=" (tankUser, id) in tankUsers" :key="id">
            <td>{{ id }}</td>
-           <td>{{ tankUser.TankId }}</td>
-           <td>{{ tankUser.UserId }}</td>
            <td>{{ tankUser.NameTank }}</td>
            <td>{{ tankUser.UserName }}</td>
            <td>{{ tankUser.PutMilk }}</td>

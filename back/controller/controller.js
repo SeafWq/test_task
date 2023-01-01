@@ -1,6 +1,3 @@
-// const {Tank} = require("../models");
-// const {User} = require("../models");
-// const {RelationsTankUser} = require("../models/index");
 const db = require("../models")   
 const Tank = db.tank;
 const User = db.user;
@@ -18,11 +15,9 @@ async function  insertUser(name, put_milk) {
     
   }
 
-async function junctionCreate(TankId, UserId) {
+async function junctionCreate(UserId) {
 
-    const relationsTankUser = await RelationsTankUser.create( { TankId, UserId });
-        
-     return relationsTankUser;
+    return await RelationsTankUser.create({UserId});
      
      
  }

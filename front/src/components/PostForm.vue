@@ -1,25 +1,20 @@
 <template>
   <div class="formUserTank">
-             <div class="form-group">
-            <input type="text" class="form-control" ref="tankId" placeholder="номер танка" />
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" ref="userId" placeholder="номер пользователя" />
-          </div>
-            <div class="form-group">
-            <input type="text" class="form-control" ref="name" placeholder="имя" />
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" ref="put_milk" placeholder="количество молока" />
-          </div>
-          <button class="btn btn-sm btn-primary"  @click="postData(), postRelations()">Залить молоко</button>
+    <div class="form-group">
+      <input type="text" class="form-control" ref="name" placeholder="имя"/>
+    </div>
+    <div class="form-group">
+      <input type="text" class="form-control" ref="put_milk" placeholder="количество молока"/>
+    </div>
+    <button class="btn btn-sm btn-primary" @click="postData(), postRelations(), reloadPage()">Залить молоко</button>
   </div>
 
-  </template>
+</template>
 
 <script>
 import http from '../http-common'
 import axios from 'axios'
+
 export default {
   data () {
     return {
@@ -32,14 +27,12 @@ export default {
       return JSON.stringify(res, null, 2)
     },
 
-    // multiplyActions () {
-    //   this.postData();
-    //   this.postRelations();
-    // },
+    reloadPage () {
+      window.location.reload()
+    },
 
     async postData () {
       const postData = {
-        id: this.$refs.userId.value,
         name: this.$refs.name.value,
         put_milk: this.$refs.put_milk.value
       }
@@ -63,7 +56,7 @@ export default {
     },
     async postRelations () {
       axios.post('http://localhost:3000/apiRouter/tank-user',
-        { TankId: this.$refs.tankId.value, UserId: this.$refs.userId.value })
+        { UserName: this.$refs.name.value })
         .then(response => {
           console.log(response)
         })
